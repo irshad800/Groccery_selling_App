@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grocerry/Screens/demo.dart';
 import 'package:grocerry/Screens/profile.dart';
 import 'package:grocerry/utils/colors.dart';
 
@@ -25,48 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: primaryColors,
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.chat,
-                color: primaryColors,
-              ),
-              label: 'Chat'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart, color: primaryColors),
-              label: 'Cart'),
-          BottomNavigationBarItem(
-              icon: IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => demo()));
-                  },
-                  icon: Icon(Icons.notifications, color: primaryColors)),
-              label: 'Notification'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, color: primaryColors),
-            label: 'Favourite',
-          ),
-        ],
-
-        currentIndex: 0, // Set the current index to highlight the favorite item
-        selectedItemColor: Colors.black, // Color for selected item
-        unselectedItemColor: Colors.grey, // Color for unselected items
-        selectedLabelStyle: TextStyle(
-            color: Colors.black,
-            fontFamily: "Airbnb",
-            fontSize: 11), // Color for selected label
-        unselectedLabelStyle:
-            TextStyle(color: Colors.grey, fontFamily: "Airbnb"),
-      ),
       appBar: AppBar(
         backgroundColor: Colors.white70,
         elevation: 0,
@@ -133,7 +90,80 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: const Header(),
+      body: Header(),
+      floatingActionButton: SizedBox(
+        width: 70,
+        height: 70,
+        child: FloatingActionButton(
+          shape: CircleBorder(),
+          elevation: 5,
+          onPressed: () {
+            setState(() {
+              _selectedIndex = 2;
+            });
+          },
+          child: Icon(
+            Icons.shopping_cart,
+            color: Colors.white,
+          ),
+          backgroundColor: primaryColors,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        notchMargin: 5.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 0;
+                  });
+                },
+                icon: Icon(
+                  Icons.home,
+                  color: _selectedIndex == 0 ? primaryColors : Colors.grey,
+                  size: 30,
+                )),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 1;
+                  });
+                },
+                icon: Icon(
+                  Icons.chat,
+                  color: _selectedIndex == 1 ? primaryColors : Colors.grey,
+                  size: 30,
+                )),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 3;
+                  });
+                },
+                icon: Icon(
+                  Icons.notifications,
+                  color: _selectedIndex == 3 ? primaryColors : Colors.grey,
+                  size: 30,
+                )),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 4;
+                  });
+                },
+                icon: Icon(
+                  Icons.favorite,
+                  color: _selectedIndex == 4 ? primaryColors : Colors.grey,
+                  size: 30,
+                )),
+          ],
+        ),
+      ),
     );
   }
 }

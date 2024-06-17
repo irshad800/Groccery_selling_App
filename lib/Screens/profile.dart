@@ -41,7 +41,7 @@ class UserProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: ' Muhammed Irshad',
+                    hintText: 'Irshad',
                     labelStyle: TextStyle(color: primaryColors),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(39),

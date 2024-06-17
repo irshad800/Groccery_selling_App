@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "444451116851",
+    "project_id": "grocerry-selling-app-ecommerce",
+    "storage_bucket": "grocerry-selling-app-ecommerce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444451116851:android:bfc2002c91fb562ad35046",
+        "android_client_info": {
+          "package_name": "com.example.grocerry"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC6yZPO3f8s5Kk9B8pEIsiqmrlFOpTHz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444451116851:android:81bc7fb4d7dc8fa8d35046",
+        "android_client_info": {
+          "package_name": "com.example.project_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC6yZPO3f8s5Kk9B8pEIsiqmrlFOpTHz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

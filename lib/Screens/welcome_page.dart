@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocerry/Screens/login_page.dart';
 import 'package:grocerry/utils/colors.dart';
-
-import 'homeScreen.dart';
 
 class welcomePage extends StatefulWidget {
   const welcomePage({super.key});
@@ -62,7 +61,7 @@ class _welcomePageState extends State<welcomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreen(),
+                        builder: (context) => Login(),
                       ));
                 },
                 child: Text(

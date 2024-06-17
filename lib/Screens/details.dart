@@ -5,7 +5,22 @@ import 'package:grocerry/utils/colors.dart';
 import 'homeScreen.dart';
 
 class details extends StatefulWidget {
-  const details({super.key});
+  const details(
+      {super.key,
+      this.dImage,
+      this.dName,
+      this.dRating,
+      this.dCalorie,
+      this.dTime,
+      this.DText,
+      this.dPrice});
+  final String? dImage;
+  final String? dName;
+  final int? dPrice;
+  final double? dRating;
+  final double? dCalorie;
+  final int? dTime;
+  final String? DText;
 
   @override
   State<details> createState() => _demoState();
@@ -13,10 +28,17 @@ class details extends StatefulWidget {
 
 class _demoState extends State<details> {
   int _counter = 1;
+  int _totalPrice = 0;
+  @override
+  void initState() {
+    _totalPrice = widget.dPrice ?? 0;
+    super.initState();
+  }
 
   void increment() {
     setState(() {
       _counter++;
+      _totalPrice = (widget.dPrice ?? 0) * _counter;
     });
   }
 
@@ -26,6 +48,7 @@ class _demoState extends State<details> {
         _counter = 1;
       } else {
         _counter--;
+        _totalPrice = (widget.dPrice ?? 0) * _counter;
       }
     });
   }
@@ -77,9 +100,7 @@ class _demoState extends State<details> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.grey.withOpacity(0.1),
                 child: InkWell(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
+                  onTap: () {},
                   child: Container(
                     height: 40,
                     width: 40,
@@ -123,22 +144,33 @@ class _demoState extends State<details> {
               ),
             ),
             Positioned(
-                top: 110,
-                left: 35,
-                right: 35,
-                child: Image.asset("assets/images/img-removebg-preview.png")),
+              top: 97,
+              left: 20,
+              right: 20,
+              child: widget.dImage != null
+                  ? Hero(
+                      tag: widget.dImage!,
+                      child: Image.asset(
+                        widget.dImage!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 300,
+                      ),
+                    )
+                  : Container(),
+            ),
             Positioned(
                 top: 400,
                 left: 20,
                 child: Text(
-                  "Avacado Salad",
+                  widget.dName ?? "",
                   style: TextStyle(fontFamily: "Airbnb", fontSize: 30),
                 )),
             Positioned(
                 top: 455,
                 left: 20,
                 child: Text(
-                  "₹120",
+                  "₹$_totalPrice",
                   style: TextStyle(
                       fontFamily: "Airbnb", fontSize: 25, color: primaryColors),
                 )),
@@ -198,27 +230,27 @@ class _demoState extends State<details> {
                     size: 21,
                   ),
                   Text(
-                    "4.5",
+                    "${widget.dRating ?? 0}",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
-                  SizedBox(width: 60),
+                  SizedBox(width: 65),
                   Icon(
                     Icons.bloodtype,
                     color: Colors.red,
                     size: 21,
                   ),
                   Text(
-                    "100 kcal",
+                    "${widget.dCalorie ?? 0}Kcal",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
-                  SizedBox(width: 50),
+                  SizedBox(width: 55),
                   Icon(
                     Icons.access_time_filled_rounded,
                     color: Colors.yellow[700],
                     size: 21,
                   ),
                   Text(
-                    "20 Min",
+                    "${widget.dTime ?? 0}min",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 ],

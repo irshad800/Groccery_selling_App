@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:grocerry/Screens/details.dart';
 
 import '../utils/colors.dart';
 
@@ -123,13 +122,7 @@ class _ItemsState extends State<Items> {
               bottom: 1,
               right: 1,
               child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => details(),
-                      ));
-                },
+                onTap: widget.onTapadd,
                 child: Container(
                   height: 40,
                   width: 40,
