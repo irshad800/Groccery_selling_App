@@ -1,14 +1,14 @@
-// food.dart
-
 import 'package:flutter/material.dart';
 import 'package:grocerry/Screens/details.dart';
 
-import '../items.dart'; // Adjust import as per your project structure
+import '../items.dart';
 
 class Food extends StatefulWidget {
   final String searchQuery;
+  final Function(Map<String, String>) onToggleFavorite;
 
-  Food({Key? key, required this.searchQuery}) : super(key: key);
+  Food({Key? key, required this.searchQuery, required this.onToggleFavorite})
+      : super(key: key);
 
   @override
   State<Food> createState() => _FoodState();
@@ -93,8 +93,9 @@ class _FoodState extends State<Food> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => details(
+                    // Assuming 'Details' is your details screen
                     dImage: item['image']!,
-                    dName: item['name'],
+                    dName: item['name']!,
                     dCalorie: double.parse(item['rating']!),
                     dPrice: int.parse(item['price']!),
                     dRating: double.parse(item['rating']!),

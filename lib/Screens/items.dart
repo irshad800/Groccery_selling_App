@@ -1,45 +1,60 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocerry/utils/FavouriteItemList.dart';
 
 import '../utils/colors.dart';
 
 class Items extends StatefulWidget {
   const Items({
-    super.key,
-    required this.image,
-    required this.name,
-    required this.time,
-    required this.rating,
-    required this.price,
+    Key? key,
+    this.image,
+    this.name,
+    this.time,
+    this.rating,
+    this.price,
     this.onTapFull,
     this.onTapadd,
-  });
+    this.index,
+  }) : super(key: key);
 
-  final String image;
-  final String name;
-  final String time;
-  final String rating;
-  final String price;
+  final String? image;
+  final String? name;
+  final String? time;
+  final String? rating;
+  final String? price;
   final VoidCallback? onTapFull;
   final VoidCallback? onTapadd;
+  final int? index;
 
   @override
   State<Items> createState() => _ItemsState();
 }
 
 class _ItemsState extends State<Items> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
+      SnackBar(
+        backgroundColor: primaryColors,
+        content: Text(message),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
   bool _isFavorite = false;
 
   void _toggleFavorite() {
     setState(() {
-      _isFavorite = !_isFavorite;
+      _isFavorite = !_isFavorite; // Toggle the favorite state
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      key: _scaffoldKey,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
@@ -51,12 +66,13 @@ class _ItemsState extends State<Items> {
           children: [
             Positioned(
               top: 9,
-              left: 1,
+              left: 15,
               child: Container(
                 height: 120,
-                width: 150,
+                width: 130,
                 child: Image.asset(
-                  widget.image,
+                  widget.image!,
+                  fit: BoxFit.cover, // Ensure the image covers the container
                 ),
               ),
             ),
@@ -64,7 +80,24 @@ class _ItemsState extends State<Items> {
               top: 0,
               right: 0,
               child: IconButton(
-                onPressed: _toggleFavorite,
+                onPressed: () {
+                  if (!_isFavorite) {
+                    _showSnackBar("Added to favourites");
+                  } else {
+                    _showSnackBar("Removed from favourites");
+                  }
+                  _toggleFavorite();
+                  if (_isFavorite) {
+                    fav(
+                      favName: widget.name,
+                      favImage: widget.image,
+                      favPrice: widget.price,
+                      onTapAdd: widget.onTapadd,
+                    );
+                  } else {
+                    fitems.removeAt(widget.index!);
+                  }
+                },
                 icon: Icon(
                   _isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: _isFavorite ? Colors.red : null,
@@ -77,7 +110,7 @@ class _ItemsState extends State<Items> {
               right: 15,
               child: Center(
                 child: Text(
-                  widget.name,
+                  widget.name!,
                   style: TextStyle(fontFamily: "Airbnb"),
                 ),
               ),
@@ -104,7 +137,7 @@ class _ItemsState extends State<Items> {
                     size: 15,
                   ),
                   Text(
-                    widget.rating,
+                    widget.rating!,
                     style: TextStyle(fontSize: 11, color: Colors.grey),
                   ),
                 ],

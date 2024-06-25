@@ -6,6 +6,7 @@ class CustomTextField extends StatefulWidget {
   final String? errorText;
   final bool obscuretext;
   final bool isPassword;
+  final TextInputType? keytype;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
 
@@ -17,6 +18,7 @@ class CustomTextField extends StatefulWidget {
     this.controller,
     this.validator,
     this.errorText,
+    this.keytype,
   }) : super(key: key);
 
   @override
@@ -35,14 +37,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: widget.keytype,
       controller: widget.controller,
-      validator: widget.validator,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return ("Please ${widget.labeltext}");
+        }
+        return null;
+      },
       obscureText: widget.isPassword ? _obscuretext : false,
       decoration: InputDecoration(
         labelText: widget.labeltext,
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: primaryColors)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30.0),
-          borderSide: BorderSide(color: Colors.white), // Added borderSide here
+          borderSide: BorderSide(color: primaryColors), // Added borderSide here
         ),
         fillColor: Colors.white,
         filled: true,

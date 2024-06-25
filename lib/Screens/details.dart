@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocerry/utils/colors.dart';
 
+import '../utils/CartList.dart';
 import 'homeScreen.dart';
 
 class details extends StatefulWidget {
@@ -27,6 +28,17 @@ class details extends StatefulWidget {
 }
 
 class _demoState extends State<details> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  void _showSnackBar() {
+    ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
+      SnackBar(
+        backgroundColor: primaryColors,
+        content: Text('Added to Cart'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
   int _counter = 1;
   int _totalPrice = 0;
   @override
@@ -73,11 +85,25 @@ class _demoState extends State<details> {
     String text =
         "We recommend making this avocado salad just before you plan to serve it, as the avocados will brown slightly over time and the ingredients will become liquidy. This avocado salad is a delicious combination of ripe avocados, sweet onions, fresh tomatoes, and cilantro. This recipe is so easy to make and very colorful — I think you'll like it!";
     return Scaffold(
+      key: _scaffoldKey,
       drawer: Drawer(),
       body: Container(
         color: primaryColors,
         child: Stack(
           children: [
+            Positioned(
+              top: 50,
+              left: 134,
+              child: Text(
+                "Details",
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Airbnb",
+                  color: Colors.white70,
+                ),
+              ),
+            ),
             Positioned(
               bottom: 0,
               right: 0,
@@ -328,8 +354,15 @@ class _demoState extends State<details> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
+                            builder: (context) => MainScaffold(),
                           ));
+                      _showSnackBar();
+                      Crt(
+                        favImage: widget.dImage,
+                        favName: widget.dName,
+                        qty: _counter,
+                        favPrice: widget.dPrice,
+                      );
                     },
                     child: Text(
                       "Add to cart",

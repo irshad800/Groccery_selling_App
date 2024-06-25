@@ -191,6 +191,7 @@ class _HeaderPartState extends State<Header> {
                 child: TabBarView(
                   children: [
                     Food(
+                      onToggleFavorite: (item) {},
                       searchQuery: _searchQuery,
                     ),
                     fruit(
