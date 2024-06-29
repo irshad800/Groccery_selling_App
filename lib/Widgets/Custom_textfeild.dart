@@ -41,7 +41,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return ("Please ${widget.labeltext}");
+          return ("Please enter ${widget.labeltext}");
         }
         return null;
       },

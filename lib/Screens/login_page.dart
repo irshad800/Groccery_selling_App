@@ -18,7 +18,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _CpasswordController = TextEditingController();
   bool _obscureText = true;
-  FirebaseServices obj = FirebaseServices();
+  FirebaseServices _SigninFB = FirebaseServices();
   String? emailError;
   String? passwordError;
   bool loading = false;
@@ -72,6 +72,7 @@ class _LoginState extends State<Login> {
                     // Email Address
                     CustomTextField(
                       labeltext: 'Email Address',
+                      controller: _emailController,
                     ),
 
                     SizedBox(height: 20),
@@ -79,6 +80,7 @@ class _LoginState extends State<Login> {
                     // Password
                     CustomTextField(
                       labeltext: "Password",
+                      controller: _passwordController,
                       isPassword: true,
                     ),
                     // Recovery Password
@@ -98,13 +100,11 @@ class _LoginState extends State<Login> {
                     // Sign In Button
                     ElevatedButton(
                       onPressed: () {
-                        if (_formkey.currentState?.validate() ?? false) {
-                          obj.registration(
-                              password: _passwordController.text,
-                              cPassword: _CpasswordController.text,
-                              context: context,
-                              username: _usernameController.text);
-                        }
+                        if (_formkey.currentState?.validate() ?? false) {}
+                        _SigninFB.signIn(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                            context: context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColors,
@@ -122,7 +122,9 @@ class _LoginState extends State<Login> {
 
                     // Sign In with Google Button
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        _SigninFB.signInWithGoogle(context: context);
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(

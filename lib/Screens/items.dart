@@ -46,7 +46,7 @@ class _ItemsState extends State<Items> {
 
   void _toggleFavorite() {
     setState(() {
-      _isFavorite = !_isFavorite; // Toggle the favorite state
+      _isFavorite = !_isFavorite;
     });
   }
 
@@ -94,9 +94,7 @@ class _ItemsState extends State<Items> {
                       favPrice: widget.price,
                       onTapAdd: widget.onTapadd,
                     );
-                  } else {
-                    fitems.removeAt(widget.index!);
-                  }
+                  } else {}
                 },
                 icon: Icon(
                   _isFavorite ? Icons.favorite : Icons.favorite_border,

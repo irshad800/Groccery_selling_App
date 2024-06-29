@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grocerry/Screens/PaymentScreen.dart';
 import 'package:grocerry/Screens/UserAdress.dart';
 import 'package:grocerry/utils/CartList.dart';
 
 import '../../utils/colors.dart';
+import 'PaymentScreen.dart';
 
 class PaymentDetails extends StatefulWidget {
   PaymentDetails({

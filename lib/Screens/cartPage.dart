@@ -122,12 +122,19 @@ class _CartState extends State<Cart> {
                               ),
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PaymentDetails(
-                                            ChTotal: total,
-                                          )));
+                              if (Citems == null || Citems.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: primaryColors,
+                                        content: Text("Add items to Cart")));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PaymentDetails(
+                                              ChTotal: total,
+                                            )));
+                              }
                             },
                             child: const Text(
                               "CheckOut>>",
@@ -182,129 +189,133 @@ class _CartState extends State<Cart> {
               left: 15,
               right: 15,
               bottom: 120,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 9,
-                  childAspectRatio: 3,
-                ),
-                itemCount: Citems.length,
-                itemBuilder: (context, index) {
-                  var item = Citems[index];
-                  return Stack(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          leading: Image.asset(
-                            item['image'],
-                            width: 40,
-                            height: 40,
-                          ),
-                          title: Text(
-                            item['name'],
-                            style: TextStyle(
-                              fontFamily: "Airbnb",
-                              color: primaryColors,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "₹${item['price'] * item['qty']}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Airbnb",
-                            ),
-                          ),
-                          onTap: () {},
-                        ),
+              child: (Citems == null || Citems.isEmpty)
+                  ? Center(child: Image.asset("assets/images/img_5.png"))
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 9,
+                        childAspectRatio: 3,
                       ),
-                      Positioned(
-                        bottom: 6,
-                        right: -2,
-                        child: Container(
-                          height: 50,
-                          width: 122,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              bottomRight: Radius.circular(17),
-                            ),
-                            color: primaryColors,
-                          ),
-                          child: Row(
-                            children: [
-                              IconButton(
-                                iconSize: 20,
-                                onPressed: () {
-                                  setState(() {
-                                    if (item['qty'] > 1) {
-                                      item['qty']--;
-                                      _calculateTotal();
-                                    }
-                                  });
-                                },
-                                icon: const Icon(
-                                  CupertinoIcons.minus,
-                                  color: Colors.white,
-                                ),
+                      itemCount: Citems.length,
+                      itemBuilder: (context, index) {
+                        var item = Citems[index];
+
+                        return Stack(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(15.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
                               ),
-                              Center(
-                                child: Text(
-                                  "${item['qty']}",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
+                              child: ListTile(
+                                leading: Image.asset(
+                                  item['image'],
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                title: Text(
+                                  item['name'],
+                                  style: TextStyle(
+                                    fontFamily: "Airbnb",
+                                    color: primaryColors,
                                   ),
                                 ),
+                                subtitle: Text(
+                                  "₹${item['price'] * item['qty']}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Airbnb",
+                                  ),
+                                ),
+                                onTap: () {},
                               ),
-                              IconButton(
-                                iconSize: 20,
+                            ),
+                            Positioned(
+                              bottom: 6,
+                              right: -2,
+                              child: Container(
+                                height: 50,
+                                width: 122,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(17),
+                                  ),
+                                  color: primaryColors,
+                                ),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      iconSize: 20,
+                                      onPressed: () {
+                                        setState(() {
+                                          if (item['qty'] > 1) {
+                                            item['qty']--;
+                                            _calculateTotal();
+                                          }
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        CupertinoIcons.minus,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        "${item['qty']}",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      iconSize: 20,
+                                      onPressed: () {
+                                        setState(() {
+                                          item['qty']++;
+                                          _calculateTotal();
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        CupertinoIcons.plus,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 2,
+                              right: 4,
+                              child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    item['qty']++;
+                                    Citems.removeAt(index);
                                     _calculateTotal();
                                   });
                                 },
-                                icon: const Icon(
-                                  CupertinoIcons.plus,
-                                  color: Colors.white,
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: primaryColors,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 2,
-                        right: 4,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              Citems.removeAt(index);
-                              _calculateTotal();
-                            });
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            color: primaryColors,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ],
         ),

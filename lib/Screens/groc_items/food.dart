@@ -85,15 +85,12 @@ class _FoodState extends State<Food> {
             time: item['time']!,
             rating: item['rating']!,
             price: item['price']!,
-            onTapFull: () {
-              // Handle full item tap
-            },
+            onTapFull: () {},
             onTapadd: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => details(
-                    // Assuming 'Details' is your details screen
                     dImage: item['image']!,
                     dName: item['name']!,
                     dCalorie: double.parse(item['rating']!),

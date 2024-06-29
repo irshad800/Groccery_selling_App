@@ -139,7 +139,11 @@ class CustomDrawer extends StatelessWidget {
             ),
             title: Text('Home'),
             onTap: () {
-              Navigator.pop(context); // Closes the drawer
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainScaffold(),
+                  ));
             },
           ),
           ListTile(

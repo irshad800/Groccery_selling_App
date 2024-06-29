@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:grocerry/Screens/items.dart';
 
 import '../utils/FavouriteItemList.dart';
 import '../utils/colors.dart';
@@ -9,8 +8,9 @@ import '../utils/colors.dart';
 class FavouritePage extends StatefulWidget {
   const FavouritePage({
     super.key,
+    this.ontapAdd,
   });
-
+  final String? ontapAdd;
   @override
   State<FavouritePage> createState() => _FavouritePageState();
 }
@@ -92,85 +92,83 @@ class _FavouritePageState extends State<FavouritePage> {
               left: 20,
               right: 20,
               bottom: 20,
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 9,
-                  childAspectRatio: 3,
-                ),
-                itemCount: fitems.length,
-                itemBuilder: (context, index) {
-                  Items(
-                    index: index,
-                  );
-                  var item = fitems[index];
+              child: (fitems == null || fitems.isEmpty)
+                  ? Center(child: Image.asset("assets/images/img_6.png"))
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 9,
+                        childAspectRatio: 3,
+                      ),
+                      itemCount: fitems.length,
+                      itemBuilder: (context, index) {
+                        var item = fitems[index];
 
-                  return Stack(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              spreadRadius: 2,
+                        return Stack(
+                          children: [
+                            Container(
+                                padding: EdgeInsets.all(15.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: ListTile(
+                                  leading: Image.asset(
+                                    item['image'],
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                  title: Text(
+                                    item['name'],
+                                    style: TextStyle(
+                                      fontFamily: "Airbnb",
+                                      color: primaryColors,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "₹${item['price']}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Airbnb",
+                                    ),
+                                  ),
+                                  onTap: () {},
+                                )),
+                            Positioned(
+                              bottom: 3,
+                              right: -1,
+                              child: GestureDetector(
+                                onTap: item['onTapadd'],
+                                child: Container(
+                                  height: 40,
+                                  width: 42,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(11),
+                                    ),
+                                    color: primaryColors,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      CupertinoIcons.plus,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
-                        ),
-                        child: ListTile(
-                          leading: Image.asset(
-                            item['image'],
-                            width: 40,
-                            height: 40,
-                          ),
-                          title: Text(
-                            item['name'],
-                            style: TextStyle(
-                              fontFamily: "Airbnb",
-                              color: primaryColors,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "₹${item['price']}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Airbnb",
-                            ),
-                          ),
-                          onTap: () {},
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 3,
-                        right: -1,
-                        child: GestureDetector(
-                          onTap: item['onTapAdd'],
-                          child: Container(
-                            height: 40,
-                            width: 42,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(11),
-                              ),
-                              color: primaryColors,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                CupertinoIcons.plus,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

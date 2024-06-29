@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
-import 'Checkout.dart'; // Make sure you have a colors.dart file with primaryColors defined
 
 class PaymentMethod extends StatefulWidget {
   PaymentMethod({super.key});
@@ -12,6 +11,200 @@ class PaymentMethod extends StatefulWidget {
 }
 
 class _PaymentMethod extends State<PaymentMethod> {
+  String? _selectedPaymentMethod;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController upiController = TextEditingController();
+  TextEditingController cardNumberController = TextEditingController();
+  TextEditingController expiryDateController = TextEditingController();
+  TextEditingController cvvController = TextEditingController();
+
+  void _handleRadioValueChange(String? value) {
+    setState(() {
+      _selectedPaymentMethod = value;
+    });
+  }
+
+  void _handleAddPayment() {
+    if (_selectedPaymentMethod != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          if (_selectedPaymentMethod == 'UPI') {
+            return AlertDialog(
+              backgroundColor: Colors.grey[300],
+              title: const Text(
+                'Enter UPI Details',
+                style: TextStyle(fontFamily: "Airbnb"),
+              ),
+              content: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: upiController,
+                  decoration: InputDecoration(
+                      labelText: 'Enter UPI ID',
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColors, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColors, width: 1.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: primaryColors, width: 2.0),
+                      )),
+                  validator: (value) {
+                    return value == null || value.isEmpty
+                        ? 'This field is required'
+                        : null;
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColors,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
+                    }
+                  },
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          } else if (_selectedPaymentMethod == 'Card') {
+            return AlertDialog(
+              backgroundColor: Colors.grey[300],
+              title: const Text(
+                'Enter Card Details',
+                style: TextStyle(fontFamily: "Airbnb"),
+              ),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: cardNumberController,
+                      decoration: InputDecoration(
+                          labelText: 'Card Number',
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primaryColors)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primaryColors))),
+                      validator: (value) {
+                        return value == null || value.isEmpty
+                            ? 'This field is required'
+                            : null;
+                      },
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    TextFormField(
+                      controller: expiryDateController,
+                      decoration: InputDecoration(
+                          labelText: 'Expiry Date',
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primaryColors)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primaryColors))),
+                      validator: (value) {
+                        return value == null || value.isEmpty
+                            ? 'This field is required'
+                            : null;
+                      },
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    TextFormField(
+                      controller: cvvController,
+                      decoration: InputDecoration(
+                          labelText: 'CVV',
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primaryColors)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: primaryColors))),
+                      validator: (value) {
+                        return value == null || value.isEmpty
+                            ? 'This field is required'
+                            : null;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColors,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      )),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
+                    }
+                  },
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return AlertDialog(
+              backgroundColor: Colors.grey[300],
+              title: Text(
+                'Payment Method: $_selectedPaymentMethod',
+                style: TextStyle(fontFamily: "Airbnb"),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColors,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
+                    }
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            backgroundColor: primaryColors,
+            content: Text('Please select a payment method')),
+      );
+    }
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   void _showSnackBar() {
     ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
@@ -23,20 +216,12 @@ class _PaymentMethod extends State<PaymentMethod> {
     );
   }
 
-  String? _selectedPaymentMethod;
-  void _handleRadioValueChange(String? value) {
-    setState(() {
-      _selectedPaymentMethod = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
         body: Container(
-            color:
-                primaryColors, // Ensure primaryColors is defined in colors.dart
+            color: primaryColors,
             child: Stack(children: [
               Positioned(
                   bottom: 0,
@@ -109,11 +294,7 @@ class _PaymentMethod extends State<PaymentMethod> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PaymentDetails()));
+                                  _handleAddPayment();
                                 },
                                 child: const Text(
                                   "ADD",

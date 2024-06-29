@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:grocerry/Services/FirebaseServices.dart';
 import 'package:grocerry/Widgets/Custom_textfeild.dart';
 
 import '../../utils/colors.dart';
-import 'login_page.dart'; // Make sure you have a colors.dart file with primaryColors defined
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
-
   @override
   State<SignUp> createState() => _ContactState();
 }
 
 class _ContactState extends State<SignUp> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _CpasswordController = TextEditingController();
+
+  final FirebaseServices _SignUpFB = FirebaseServices();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -58,17 +63,22 @@ class _ContactState extends State<SignUp> {
                               // Email Address
                               CustomTextField(
                                 labeltext: 'Your Name',
+                                controller: _usernameController,
                               ),
 
                               SizedBox(height: 20),
 
                               // Password
-                              CustomTextField(labeltext: 'Email Adress'),
+                              CustomTextField(
+                                labeltext: 'Email Adress',
+                                controller: _emailController,
+                              ),
                               SizedBox(
                                 height: 20,
                               ),
                               CustomTextField(
                                 labeltext: 'Password',
+                                controller: _passwordController,
                                 isPassword: true,
                               ),
                               SizedBox(
@@ -77,18 +87,7 @@ class _ContactState extends State<SignUp> {
                               CustomTextField(
                                 labeltext: 'Confirm Password',
                                 isPassword: true,
-                              ),
-
-                              // Recovery Password
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Recovery Password',
-                                    style: TextStyle(color: Color(0xFF707B81)),
-                                  ),
-                                ),
+                                controller: _CpasswordController,
                               ),
 
                               SizedBox(height: 20),
@@ -96,14 +95,16 @@ class _ContactState extends State<SignUp> {
                               // Sign In Button
                               ElevatedButton(
                                 onPressed: () {
+                                  print(_emailController.text);
+                                  _SignUpFB.registration(
+                                      password: _passwordController.text,
+                                      cPassword: _CpasswordController.text,
+                                      context: context,
+                                      username: _usernameController.text,
+                                      email: _emailController.text);
+                                  print(_emailController);
                                   if (_formkey.currentState?.validate() ??
-                                      false) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Login(),
-                                        ));
-                                  }
+                                      false) {}
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColors,
