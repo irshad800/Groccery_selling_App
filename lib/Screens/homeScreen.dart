@@ -19,7 +19,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   static List<Widget> _widgetOptions = <Widget>[
     HomeContent(),
     Container(),
-    Cart(),
+    CartScreen(),
     Container(),
     FavouritePage(),
   ];

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocerry/models/Cartmodels.dart';
 import 'package:grocerry/utils/colors.dart';
 
+import '../Services/FirestoreServices.dart';
 import '../utils/CartList.dart';
 import 'homeScreen.dart';
 
@@ -28,6 +30,8 @@ class details extends StatefulWidget {
 }
 
 class _demoState extends State<details> {
+  final FirestoreServices _firestoreServices = FirestoreServices();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   void _showSnackBar() {
     ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
@@ -357,6 +361,12 @@ class _demoState extends State<details> {
                             builder: (context) => MainScaffold(),
                           ));
                       _showSnackBar();
+                      String name = widget.dName ?? "";
+                      int? price = widget.dPrice!; //
+                      int? qty = _counter;
+                      Cart _cart = Cart(itemName: name, price: price, qty: qty);
+                      _firestoreServices.addCart(_cart);
+
                       Crt(
                         favImage: widget.dImage,
                         favName: widget.dName,

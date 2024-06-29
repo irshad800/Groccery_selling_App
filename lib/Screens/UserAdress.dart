@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocerry/Screens/Checkout.dart';
 import 'package:grocerry/Widgets/Custom_textfeild.dart';
 
-import '../../utils/colors.dart'; // Make sure you have a colors.dart file with primaryColors defined
+import '../../utils/colors.dart';
 
 class UserAdress extends StatefulWidget {
   const UserAdress({super.key});
@@ -29,7 +29,7 @@ class _ContactState extends State<UserAdress> {
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
-        color: primaryColors, // Ensure primaryColors is defined in colors.dart
+        color: primaryColors,
         child: Stack(
           children: [
             Positioned(
