@@ -18,6 +18,10 @@ class FirestoreServices {
     await _firestore.collection('cart').add(cart.toMap());
   }
 
+  Future<void> updateCartQuantity(String id, int newQty) async {
+    await _firestore.collection('cart').doc(id).update({'qty': newQty});
+  }
+
   Future<void> deleteCart(String id) async {
     await _firestore.collection('cart').doc(id).delete();
   }

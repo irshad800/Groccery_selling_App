@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocerry/Screens/Checkout.dart';
 import 'package:grocerry/Screens/homeScreen.dart';
 import 'package:grocerry/Services/FirestoreServices.dart';
 
 import '../models/Cartmodels.dart';
-import '../utils/CartList.dart';
 import '../utils/colors.dart';
 
 class CartScreen extends StatefulWidget {
@@ -16,7 +16,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartState extends State<CartScreen> {
   final FirestoreServices _firestoreServices = FirestoreServices();
-
   double total = 0;
 
   @override
@@ -37,6 +36,19 @@ class _CartState extends State<CartScreen> {
       total += cart.price * cart.qty;
     }
     setState(() {});
+  }
+
+  Future<void> _updateCartQuantity(Cart cart, int newQty) async {
+    if (newQty < 1) return;
+    await _firestoreServices.updateCartQuantity(cart.id!, newQty);
+    setState(() {
+      cart.qty = newQty;
+      _calculateTotal([cart]); // Recalculate total for the updated cart
+    });
+  }
+
+  Future<void> _deleteCartItem(String cartId) async {
+    await _firestoreServices.deleteCart(cartId);
   }
 
   @override
@@ -73,10 +85,11 @@ class _CartState extends State<CartScreen> {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MainScaffold(),
-                              ));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MainScaffold(),
+                            ),
+                          );
                         },
                         child: const Icon(
                           Icons.arrow_back_ios_new_outlined,
@@ -132,18 +145,22 @@ class _CartState extends State<CartScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                if (Citems == null || Citems.isEmpty) {
+                                if (total == 0) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          backgroundColor: primaryColors,
-                                          content: Text("Add items to Cart")));
+                                    SnackBar(
+                                      backgroundColor: primaryColors,
+                                      content: Text("Add items to Cart"),
+                                    ),
+                                  );
                                 } else {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => PaymentDetails(
-                                                ChTotal: total,
-                                              )));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PaymentDetails(
+                                        ChTotal: total,
+                                      ),
+                                    ),
+                                  );
                                 }
                               },
                               child: const Text(
@@ -210,54 +227,106 @@ class _CartState extends State<CartScreen> {
                         return Center(child: CircularProgressIndicator());
                       }
                       List<Cart> carts = snapshot.data ?? [];
+                      if (carts.isEmpty) {
+                        return Center(
+                          child: Image.asset("assets/images/img_5.png"),
+                        );
+                      }
                       return ListView.builder(
                         itemCount: carts.length,
                         itemBuilder: (context, index) {
                           Cart cart = carts[index];
-
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Stack(children: [
-                              Container(
-                                padding: const EdgeInsets.all(15.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      spreadRadius: 2,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    leading: Image.asset(
+                                      "assets/images/img_3-removebg-preview.png",
+                                      width: 50,
+                                      height: 50,
                                     ),
-                                  ],
-                                ),
-                                child: ListTile(
-                                  leading: Image.asset(
-                                    "assets/images/img_3.png",
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  title: Text(
-                                    cart.itemName,
-                                    style: TextStyle(fontFamily: "Airbnb"),
-                                  ),
-                                  subtitle: Text(
-                                    '₹${cart.price * cart.qty}',
-                                    style: TextStyle(fontFamily: "Airbnb"),
-                                  ),
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () async {
-                                      await _firestoreServices
-                                          .deleteCart(cart.id!);
-                                      setState(() {
-                                        print("a");
-                                        _calculateTotal(carts);
-                                      });
-                                    },
+                                    title: Text(
+                                      cart.itemName,
+                                      style: TextStyle(fontFamily: "Airbnb"),
+                                    ),
+                                    subtitle: Text(
+                                      '₹${cart.price * cart.qty}',
+                                      style: TextStyle(fontFamily: "Airbnb"),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: primaryColors,
+                                      ),
+                                      onPressed: () async {
+                                        await _deleteCartItem(cart.id!);
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ]),
+                                Positioned(
+                                  right: -2,
+                                  bottom: 0,
+                                  child: Container(
+                                    height: 37,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        bottomRight: Radius.circular(12),
+                                      ),
+                                      color: primaryColors,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () async {
+                                            await _updateCartQuantity(
+                                                cart, cart.qty - 1);
+                                            setState(() {
+                                              _calculateTotal(carts);
+                                            });
+                                          },
+                                          icon: Icon(
+                                            CupertinoIcons.minus,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${cart.qty}",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
+                                            await _updateCartQuantity(
+                                                cart, cart.qty + 1);
+                                            setState(() {
+                                              _calculateTotal(carts);
+                                            });
+                                          },
+                                          icon: Icon(
+                                            CupertinoIcons.plus,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:grocerry/Screens/PaymentSuccesfull.dart';
 import 'package:grocerry/Screens/UserAdress.dart';
-import 'package:grocerry/utils/CartList.dart';
 
 import '../../utils/colors.dart';
+import '../Services/FirestoreServices.dart';
+import '../models/Cartmodels.dart';
 import 'PaymentScreen.dart';
 
 class PaymentDetails extends StatefulWidget {
@@ -19,20 +21,40 @@ class PaymentDetails extends StatefulWidget {
 
 class _PaymentDetailsState extends State<PaymentDetails> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final FirestoreServices _firestoreServices = FirestoreServices();
   double total = 0;
+
   @override
   void initState() {
-    _calculateTotal();
     super.initState();
+    _listenToCartStream();
   }
 
-  void _calculateTotal() {
+  void _listenToCartStream() {
+    _firestoreServices.getCart().listen((carts) {
+      _calculateTotal(carts);
+    });
+  }
+
+  void _calculateTotal(List<Cart> carts) {
     total = 0;
-    for (var item in Citems) {
-      total += item['price'] * item['qty'];
+    for (var cart in carts) {
+      total += cart.price * cart.qty;
     }
     setState(() {});
+  }
+
+  Future<void> _updateCartQuantity(Cart cart, int newQty) async {
+    if (newQty < 1) return;
+    await _firestoreServices.updateCartQuantity(cart.id!, newQty);
+    setState(() {
+      cart.qty = newQty;
+      _calculateTotal([cart]); // Recalculate total for the updated cart
+    });
+  }
+
+  Future<void> _deleteCartItem(String cartId) async {
+    await _firestoreServices.deleteCart(cartId);
   }
 
   @override
@@ -108,23 +130,44 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                           ),
-                          child: ListView.builder(
-                            itemCount: Citems.length,
-                            itemBuilder: (context, index) {
-                              var item = Citems[index];
-                              return ListTile(
-                                dense: true,
-                                tileColor: primaryColors,
-                                title: Text(
-                                  item['name'],
-                                  style: TextStyle(),
-                                ),
-                                subtitle: Text("Qty: ${item['qty']}"),
-                                trailing:
-                                    Text("₹${item['price'] * item['qty']}",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        )),
+                          child: StreamBuilder<List<Cart>>(
+                            stream: _firestoreServices.getCart(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              List<Cart> carts = snapshot.data ?? [];
+                              if (carts.isEmpty) {
+                                return Center(
+                                  child: Image.asset("assets/images/img_5.png"),
+                                );
+                              }
+                              return ListView.builder(
+                                itemCount: carts.length,
+                                itemBuilder: (context, index) {
+                                  var cart = carts[index];
+                                  return ListTile(
+                                    dense: true,
+                                    tileColor: primaryColors,
+                                    title: Text(
+                                      cart.itemName,
+                                      style: TextStyle(),
+                                    ),
+                                    subtitle: Text("Qty: ${cart.qty}"),
+                                    trailing: Text(
+                                      "₹${cart.price * cart.qty}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
                             },
                           ),
@@ -142,14 +185,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                         child: Row(
                           children: [
                             Text(
-                              "Adress:",
+                              "Address:",
                               style: TextStyle(
                                   fontFamily: "Airbnb",
                                   fontSize: 20,
                                   color: Colors.black),
                             ),
                             SizedBox(
-                              width: 149,
+                              width: 133,
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -226,7 +269,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                     width: 120,
                                   ),
                                   Text(
-                                    "$total",
+                                    "₹${total.toStringAsFixed(1)}",
                                     style: TextStyle(
                                         fontFamily: "Airbnb",
                                         fontSize: 17,
@@ -304,7 +347,13 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                               backgroundColor: primaryColors,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15))),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentSuccesfull(),
+                                ));
+                          },
                           child: Text(
                             "Place Order",
                             style: TextStyle(color: Colors.white, fontSize: 18),
